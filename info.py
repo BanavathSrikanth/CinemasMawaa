@@ -2,7 +2,6 @@ import re
 from os import getenv, environ
 
 id_pattern = re.compile(r'^.\d+$')
-
 def is_enabled(value, default):
     if value.lower() in ["true", "yes", "1", "enable", "y"]:
         return True
@@ -46,27 +45,13 @@ P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)
 IMDB = is_enabled((environ.get('IMDB', "False")), False)
 SINGLE_BUTTON = is_enabled((environ.get('SINGLE_BUTTON', "False")), False)
 
-# Process the file caption
-def process_caption(caption):
-    # Filter out words starting with @ or www.
-    filtered_caption = ' '.join(filter(lambda x: not x.startswith('@') and not x.startswith('www.'), caption.split()))
-    # Ensure the final caption does not start with @ or www.
-    while filtered_caption.startswith('@') or filtered_caption.startswith('www.'):
-        filtered_caption = ' '.join(filtered_caption.split()[1:])
-    return filtered_caption
+# Define a function to remove words starting with @ or www
+def remove_special_words(text):
+    return ' '.join(filter(lambda x: not (x.startswith('@') or x.startswith('www.')), text.split()))
 
-# Example usage of CUSTOM_FILE_CAPTION with processing
-file_caption = '@TeluguZoneOFC - Guntur Kaaram (2024) - Nakkileesu Golusu (Bit) 2160p DDP 5.1 - MULTiVERSE.mkv'
-file_size = '123MB'
-processed_caption = process_caption(file_caption)
-
-CUSTOM_FILE_CAPTION = environ.get(
-    "CUSTOM_FILE_CAPTION", 
-    "<b>{file_caption}\n\nSize : {file_size}\n\nJoin : @CinemasMawa_OTT😏</b>"
-)
-
-formatted_caption = CUSTOM_FILE_CAPTION.format(file_caption=processed_caption, file_size=file_size)
-print(formatted_caption)
+# Apply the function to CUSTOM_FILE_CAPTION
+CUSTOM_FILE_CAPTION_TEMPLATE = "<b>{file_caption}\n\nSize : {file_size}\n\nJoin : @CinemasMawa_OTT😏</b>"
+CUSTOM_FILE_CAPTION = remove_special_words(CUSTOM_FILE_CAPTION_TEMPLATE)
 
 BATCH_FILE_CAPTION = environ.get("BATCH_FILE_CAPTION", CUSTOM_FILE_CAPTION)
 IMDB_TEMPLATE = environ.get("IMDB_TEMPLATE", "<b>Your Query: {query}</b> \n‌‌‌‌IMDb Data by: @CinemasMawa \n\n🏷 Title: <a href={url}>{title}</a>\n🎭 Genres: {genres}\n📆 Year: <a href={url}/releaseinfo>{year}</a>\n🌟 Rating: <a href={url}/ratings>{rating}</a> / 10 \n\n♥️ we are nothing without you ♥️ \n\n💛 Please Share Us 💛\n\n⚠️Click on the button 👇 below to get your query privately")
@@ -166,10 +151,3 @@ LOG_STR += ("Long IMDB storyline enabled." if LONG_IMDB_DESCRIPTION else "LONG_I
 LOG_STR += ("Spell Check Mode Is Enabled, bot will be suggesting related movies if movie not found\n" if SPELL_CHECK_REPLY else "SPELL_CHECK_REPLY Mode disabled\n")
 LOG_STR += (f"MAX_LIST_ELM Found, long list will be shortened to first {MAX_LIST_ELM} elements\n" if MAX_LIST_ELM else "Full List of casts and crew will be shown in imdb template, restrict them by adding a value to MAX_LIST_ELM\n")
 LOG_STR += f"Your current IMDB template is {IMDB_TEMPLATE}"
-# Credit @LazyDeveloper.
-# Please Don't remove credit.
-# Born to make history @LazyDeveloper !
-# Thank you LazyDeveloper for helping us in this Journey
-# 🥰  Thank you for giving me credit @LazyDeveloperr  🥰
-# for any error please contact me -> telegram@LazyDeveloperr or insta @LazyDeveloperr 
-# rip paid developers 🤣 - >> No need to buy paid source code while @LazyDeveloperr is here 😍😍
