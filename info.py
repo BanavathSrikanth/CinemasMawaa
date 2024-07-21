@@ -46,12 +46,22 @@ IMDB = is_enabled((environ.get('IMDB', "False")), False)
 SINGLE_BUTTON = is_enabled((environ.get('SINGLE_BUTTON', "False")), False)
 
 # Define a function to remove words starting with @ or www
+
+def handle_file(file):
+    file_caption = get_file_caption(file)  # Replace with actual method to get the caption
+    file_size = get_file_size(file)  # Replace with actual method to get the file size
+    formatted_caption = format_caption(file_caption, file_size)
+    send_file(file, caption=formatted_caption)  # Replace with actual method to send the file
+
 def remove_special_words(text):
     return ' '.join(filter(lambda x: not (x.startswith('@') or x.startswith('www.')), text.split()))
 
-# Apply the function to CUSTOM_FILE_CAPTION
-CUSTOM_FILE_CAPTION_TEMPLATE = "<b>{file_caption}\n\nSize : {file_size}\n\nJoin : @CinemasMawa_OTT😏</b>"
-CUSTOM_FILE_CAPTION = remove_special_words(CUSTOM_FILE_CAPTION_TEMPLATE)
+def format_caption(file_caption, file_size):
+    # Apply the removal function to the file caption
+    cleaned_caption = remove_special_words(file_caption)
+    # Return the formatted caption
+    return f"<b>{cleaned_caption}\n\nSize : {file_size}\n\nJoin : @CinemasMawa_OTT😏</b>"
+
 
 BATCH_FILE_CAPTION = environ.get("BATCH_FILE_CAPTION", CUSTOM_FILE_CAPTION)
 IMDB_TEMPLATE = environ.get("IMDB_TEMPLATE", "<b>Your Query: {query}</b> \n‌‌‌‌IMDb Data by: @CinemasMawa \n\n🏷 Title: <a href={url}>{title}</a>\n🎭 Genres: {genres}\n📆 Year: <a href={url}/releaseinfo>{year}</a>\n🌟 Rating: <a href={url}/ratings>{rating}</a> / 10 \n\n♥️ we are nothing without you ♥️ \n\n💛 Please Share Us 💛\n\n⚠️Click on the button 👇 below to get your query privately")
