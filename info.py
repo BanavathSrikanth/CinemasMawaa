@@ -2,6 +2,7 @@ import re
 from os import getenv, environ
 
 id_pattern = re.compile(r'^.\d+$')
+
 def is_enabled(value, default):
     if value.lower() in ["true", "yes", "1", "enable", "y"]:
         return True
@@ -38,14 +39,35 @@ DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://cinemasmawa:cinemasmaw
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
-
 # Others
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', "-1001910808077"))
 SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'Srikanth_Official_Bot')
 P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)
 IMDB = is_enabled((environ.get('IMDB', "False")), False)
 SINGLE_BUTTON = is_enabled((environ.get('SINGLE_BUTTON', "False")), False)
-CUSTOM_FILE_CAPTION = environ.get("CUSTOM_FILE_CAPTION", "<b>{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.')))),{file_caption}}\n\nSize : {file_size}\n\nJoin : @CinemasMawa_OTT😏</b>")
+
+# Process the file caption
+def process_caption(caption):
+    # Filter out words starting with @ or www.
+    filtered_caption = ' '.join(filter(lambda x: not x.startswith('@') and not x.startswith('www.'), caption.split()))
+    # Ensure the final caption does not start with @ or www.
+    while filtered_caption.startswith('@') or filtered_caption.startswith('www.'):
+        filtered_caption = ' '.join(filtered_caption.split()[1:])
+    return filtered_caption
+
+# Example usage of CUSTOM_FILE_CAPTION with processing
+file_caption = '@TeluguZoneOFC - Guntur Kaaram (2024) - Nakkileesu Golusu (Bit) 2160p DDP 5.1 - MULTiVERSE.mkv'
+file_size = '123MB'
+processed_caption = process_caption(file_caption)
+
+CUSTOM_FILE_CAPTION = environ.get(
+    "CUSTOM_FILE_CAPTION", 
+    "<b>{file_caption}\n\nSize : {file_size}\n\nJoin : @CinemasMawa_OTT😏</b>"
+)
+
+formatted_caption = CUSTOM_FILE_CAPTION.format(file_caption=processed_caption, file_size=file_size)
+print(formatted_caption)
+
 BATCH_FILE_CAPTION = environ.get("BATCH_FILE_CAPTION", CUSTOM_FILE_CAPTION)
 IMDB_TEMPLATE = environ.get("IMDB_TEMPLATE", "<b>Your Query: {query}</b> \n‌‌‌‌IMDb Data by: @CinemasMawa \n\n🏷 Title: <a href={url}>{title}</a>\n🎭 Genres: {genres}\n📆 Year: <a href={url}/releaseinfo>{year}</a>\n🌟 Rating: <a href={url}/ratings>{rating}</a> / 10 \n\n♥️ we are nothing without you ♥️ \n\n💛 Please Share Us 💛\n\n⚠️Click on the button 👇 below to get your query privately")
 LONG_IMDB_DESCRIPTION = is_enabled(environ.get("LONG_IMDB_DESCRIPTION", "False"), False)
@@ -88,8 +110,6 @@ lazy_groups = environ.get('LAZY_GROUPS','')
 LAZY_GROUPS = [int(lazy_groups) for lazy_groups in lazy_groups.split()] if lazy_groups else None # ADD GROUP ID IN THIS VARIABLE
 my_users = [int(my_users) if id_pattern.search(my_users) else my_users for my_users in environ.get('MY_USERS', '').split()]
 MY_USERS = (my_users) if my_users else []
-
-
 
 # Online Stream and Download
 PORT = int(environ.get('PORT', 8080))
