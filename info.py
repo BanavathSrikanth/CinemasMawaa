@@ -1,7 +1,6 @@
 import re
 from os import getenv, environ
 
-# Configuration Code
 id_pattern = re.compile(r'^.\d+$')
 
 def is_enabled(value, default):
@@ -33,7 +32,7 @@ auth_grp = environ.get('AUTH_GROUP')
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 AUTH_GROUPS = [int(ch) for ch in auth_grp.split()] if auth_grp else None
 
-BOT_USERNAME = environ.get('BOT_USERNAME' ,'CinemasMawaBot')
+BOT_USERNAME = environ.get('BOT_USERNAME' ,'CinemasMawaBot' )
 
 # MongoDB information
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://cinemasmawa:cinemasmawa@cluster0.omxcbvk.mongodb.net/?retryWrites=true&w=majority")
@@ -46,12 +45,20 @@ SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'Srikanth_Official_Bot')
 P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)
 IMDB = is_enabled((environ.get('IMDB', "False")), False)
 SINGLE_BUTTON = is_enabled((environ.get('SINGLE_BUTTON', "False")), False)
-CUSTOM_FILE_CAPTION = environ.get("CUSTOM_FILE_CAPTION", "<b>{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.')))}, {file_caption}}\n\nSize : {file_size}\n\nJoin : @CinemasMawa_OTT😏</b>")
+
+# Define a function to remove leading @ or www
+def remove_leading_special_words(text):
+    return re.sub(r'^(@\w+|www\.\w+)', '', text).strip()
+
+# Apply the function to CUSTOM_FILE_CAPTION
+CUSTOM_FILE_CAPTION_TEMPLATE = "<b>{file_caption}\n\nSize : {file_size}\n\nJoin : @CinemasMawa_OTT😏</b>"
+CUSTOM_FILE_CAPTION = remove_leading_special_words(CUSTOM_FILE_CAPTION_TEMPLATE)
+
 BATCH_FILE_CAPTION = environ.get("BATCH_FILE_CAPTION", CUSTOM_FILE_CAPTION)
 IMDB_TEMPLATE = environ.get("IMDB_TEMPLATE", "<b>Your Query: {query}</b> \n‌‌‌‌IMDb Data by: @CinemasMawa \n\n🏷 Title: <a href={url}>{title}</a>\n🎭 Genres: {genres}\n📆 Year: <a href={url}/releaseinfo>{year}</a>\n🌟 Rating: <a href={url}/ratings>{rating}</a> / 10 \n\n♥️ we are nothing without you ♥️ \n\n💛 Please Share Us 💛\n\n⚠️Click on the button 👇 below to get your query privately")
 LONG_IMDB_DESCRIPTION = is_enabled(environ.get("LONG_IMDB_DESCRIPTION", "False"), False)
 SPELL_CHECK_REPLY = is_enabled(environ.get("SPELL_CHECK_REPLY", "True"), False)
-SPELL_CHECK = is_enabled(environ.get("SPELL_CHECK_REPLY", "False"), False)
+SPELL_CHECK = is_enabled((environ.get("SPELL_CHECK_REPLY", "False")), False)
 
 MAX_LIST_ELM = environ.get("MAX_LIST_ELM", None)
 INDEX_REQ_CHANNEL = int(environ.get('INDEX_REQ_CHANNEL', LOG_CHANNEL))
@@ -60,27 +67,27 @@ MELCOW_NEW_USERS = is_enabled((environ.get('MELCOW_NEW_USERS', "False")), True)
 PROTECT_CONTENT = is_enabled((environ.get('PROTECT_CONTENT', "False")), False)
 PUBLIC_FILE_STORE = is_enabled((environ.get('PUBLIC_FILE_STORE', "False")), False)
 
-# LazyRenamer Configs
+#LazyRenamer Configs
 FLOOD = int(environ.get("FLOOD", "10"))
 LAZY_MODE = bool(environ.get("LAZY_MODE"))
+#Add user id of the user in this field those who you want to be Authentic user for file renaming features
 lazy_renamers = [int(lazrenamers) if id_pattern.search(lazrenamers) else lazrenamers for lazrenamers in environ.get('LAZY_RENAMERS', '').split()]
 LAZY_RENAMERS = (lazy_renamers + ADMINS) if lazy_renamers else []
 REQ_CHANNEL = int(environ.get('REQ_CHANNEL', "-1001883435800"))
 CM_SEARCH_CHANNEL = int(environ.get('CM_SEARCH_CHANNEL', "-1001910808077"))
 
-# AI
+#ai
 OPENAI_API = environ.get("OPENAI_API","")
 AI = is_enabled((environ.get("AI","False")), False)
-LAZY_AI_LOGS = int(environ.get("LAZY_AI_LOGS","-1001867926036")) #GIVE YOUR NEW LOG CHANNEL ID TO STORE MESSAGES THAT THEY SEARCH IN BOT PM....
-
-# Requested Content template variables
+LAZY_AI_LOGS = int(environ.get("LAZY_AI_LOGS","-1001867926036")) #GIVE YOUR NEW LOG CHANNEL ID TO STORE MESSAGES THAT THEY SEARCH IN BOT PM.... [ i have added this to keep an eye on the users message, to avoid misuse of LazyPrincess ]
+# Requested Content template variables ---
 ADMIN_USRNM = environ.get('ADMIN_USRNM','Banoth_Srikanth') # WITHOUT @
 MAIN_CHANNEL_USRNM = environ.get('MAIN_CHANNEL_USRNM','CinemasMawa') # WITHOUT @
 DEV_CHANNEL_USRNM = environ.get('DEV_CHANNEL_USRNM','CinemasMawa') # WITHOUT @
-LAZY_YT_HANDLE = environ.get('LAZY_YT_HANDLE','CinemasMawa')  # WITHOUT @ [ add only handle - don't add full url ]
-MOVIE_GROUP_USERNAME = environ.get('MOVIE_GROUP_USERNAME', "CinemasMawaDiscussion") # [ without @ ]
+LAZY_YT_HANDLE = environ.get('LAZY_YT_HANDLE','CinemasMawa')  # WITHOUT @ [  add only handle - don't add full url  ] 
+MOVIE_GROUP_USERNAME = environ.get('MOVIE_GROUP_USERNAME', "CinemasMawaDiscussion") #[ without @ ]
 
-# URL Shortener
+# Url Shortner
 URL_MODE = is_enabled((environ.get("URL_MODE","False")), False)
 URL_SHORTENR_WEBSITE = environ.get('URL_SHORTENR_WEBSITE', '') #Always use website url from api section 
 URL_SHORTNER_WEBSITE_API = environ.get('URL_SHORTNER_WEBSITE_API', '')
@@ -104,21 +111,12 @@ FQDN = str(getenv('FQDN', BIND_ADRESS)) if not ON_HEROKU or getenv('FQDN') else 
 URL = "https://{}/".format(FQDN) if ON_HEROKU or NO_PORT else \
     "http://{}:{}/".format(FQDN, PORT)
 SLEEP_THRESHOLD = int(environ.get('SLEEP_THRESHOLD', '60'))
-WORKERS = int(environ.get('WORKERS', '4'))
-SESSION_NAME = str(environ.get('SESSION_NAME', 'CinemasMawa'))
-MULTI_CLIENT = False
-name = str(environ.get('name', 'CinemasMawa'))
-PING_INTERVAL = int(environ.get("PING_INTERVAL", "1200"))  # 20 minutes
-if 'DYNO' in environ:
-    ON_HEROKU = True
-    APP_NAME = str(getenv('APP_NAME'))
-else:
-    ON_HEROKU = False
+WORKERS = int(environ.get('WORKERS', '8'))
+BIN_CHANNEL = int(getenv('BIN_CHANNEL', "-1001578091827"))
+MAX_MESSAGE_LENGTH = 4096
+PING_INTERVAL = int(environ.get('PING_INTERVAL', '1200'))  # 20 minutes
 HAS_SSL = bool(getenv('HAS_SSL', False))
-if HAS_SSL:
-    URL = "https://{}/".format(FQDN)
-else:
-    URL = "http://{}/".format(FQDN)
+
 REPO_OWNER = "LazyDeveloperr"
 
 # Auto Delete For Group Message (Self Delete) #
@@ -135,29 +133,14 @@ DOWNLOAD_TEXT_URL = "https://t.me/CinemasMawa/5"
 CAPTION_BUTTON = "Get Updates"
 CAPTION_BUTTON_URL = "https://t.me/CinemasMawa_OTT"
 
-LOG_STR = "Current Cusomized Configurations are:-\n"
-LOG_STR += ("IMDB Results are enabled, Bot will be showing imdb details for your queries.\n" if IMDB else "IMDB Results are disabled.\n")
-LOG_STR += ("P_TTI_SHOW_OFF found, Users will be redirected to send /start to Bot PM instead of sending file directly\n" if P_TTI_SHOW_OFF else "P_TTI_SHOW_OFF is disabled files will be sent in PM, instead of sending start.\n")
-LOG_STR += ("SINGLE_BUTTON is found, filename and file size will be shown in a single button instead of two separate buttons\n" if SINGLE_BUTTON else "SINGLE_BUTTON is disabled, filename and file size will be shown as different buttons\n")
+LOG_STR = "Current Customized Configurations are:-\n"
+LOG_STR += ("IMDB Results are enabled, Bot will be showing imdb details for you queries.\n" if IMDB else "IMDB Results are disabled.\n")
+LOG_STR += ("P_TTI_SHOW_OFF found, Users will be redirected to send /start to Bot PM instead of sending file directly\n" if P_TTI_SHOW_OFF else "P_TTI_SHOW_OFF is disabled, files will be sent in PM instead of sending start.\n")
+LOG_STR += ("SINGLE_BUTTON is Found, filename and file size will be shown in a single button instead of two separate buttons\n" if SINGLE_BUTTON else "SINGLE_BUTTON is disabled, filename and file size will be shown as different buttons\n")
 LOG_STR += (f"CUSTOM_FILE_CAPTION enabled with value {CUSTOM_FILE_CAPTION}, your files will be sent along with this customized caption.\n" if CUSTOM_FILE_CAPTION else "No CUSTOM_FILE_CAPTION Found, Default captions of file will be used.\n")
 LOG_STR += ("Long IMDB storyline enabled." if LONG_IMDB_DESCRIPTION else "LONG_IMDB_DESCRIPTION is disabled, Plot will be shorter.\n")
-LOG_STR += ("Spell Check Mode Is Enabled, bot will be suggesting related movies if movie not found\n" if SPELL_CHECK_REPLY else "SPELL_CHECK_REPLY Mode disabled\n")
-LOG_STR += (f"MAX_LIST_ELM Found, long list will be shortened to first {MAX_LIST_ELM} elements\n" if MAX_LIST_ELM else "Full List of casts and crew will be shown in imdb template, restrict them by adding a value to MAX_LIST_ELM\n")
+LOG_STR += ("Spell Check Mode is Enabled, bot will be suggesting related movies if movie not found\n" if SPELL_CHECK_REPLY else "SPELL_CHECK_REPLY Mode disabled\n")
+LOG_STR += (f"MAX_LIST_ELM Found, long list will be shortened to first {MAX_LIST_ELM} elements\n" if MAX_LIST_ELM else "Full List of casts and crew will be shown in IMDb template, restrict them by adding a value to MAX_LIST_ELM\n")
 LOG_STR += f"Your current IMDB template is {IMDB_TEMPLATE}"
 
-# Function Definitions
-
-def remove_special_words(text):
-    return ' '.join(filter(lambda x: not (x.startswith('@') or x.startswith('www.')), text.split()))
-
-def format_caption(file_caption, file_size):
-    cleaned_caption = remove_special_words(file_caption)
-    # Use CUSTOM_FILE_CAPTION from environment variables
-    caption_template = CUSTOM_FILE_CAPTION
-    return caption_template.format(file_caption=cleaned_caption, file_size=file_size)
-
-def handle_file(file):
-    file_caption = get_file_caption(file)  # Replace with actual method to get the caption
-    file_size = get_file_size(file)  # Replace with actual method to get the file size
-    formatted_caption = format_caption(file_caption, file_size)
-    send_file(file, caption=formatted_caption)  # Replace with actual method to send the file
+print(LOG_STR)
