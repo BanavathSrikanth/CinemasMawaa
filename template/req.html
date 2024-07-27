@@ -3,11 +3,10 @@
 <head>
     <link rel="icon" href="https://i.ibb.co/tM9L7dr/Picsart-23-09-04-13-44-43-650.png" type="image/x-icon">
     <meta charset="UTF-8">
-    <!--<link rel="icon" href=" Your Fevicol link "> -->
     <meta property="og:image" content="https://i.ibb.co/tM9L7dr/Picsart-23-09-04-13-44-43-650.png" itemprop="thumbnailUrl">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>{{file_name}} - CinemasMawa </title>
+    <title>{{file_name}} - CinemasMawa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.8/plyr.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <style>
@@ -54,7 +53,6 @@
     .button:hover {
       box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
     }
-
 
     #player-container {
         margin: 1px;
@@ -212,6 +210,57 @@
     #tg-btn:hover {
         background-color: #E8E8E8;
     }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 10px; /* Adjust spacing between dropdown and video player */
+    }
+
+    .dropbtn {
+        background-color: #2962ff;
+        color: white;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+
+    .dropbtn:hover {
+        background-color: #0039cb;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        top: 100%; /* Position below the button */
+        left: 0;
+    }
+
+    .dropdown-content button {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        background: none;
+        border: none;
+        width: 100%;
+        text-align: left;
+    }
+
+    .dropdown-content button:hover {
+        background-color: #f1f1f1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
 </style>
 </head>
 
@@ -229,11 +278,18 @@ YOUR ADS
     <div class="playercontainerbox"> 
         <h4>{{file_name}}</h4>
         <div style="margin-bottom: 20px; margin-top:15px"></div>
-        <!--Video Player Start-->
+        <!-- Video Player Start -->
+
+        <div class="dropdown">
+            <button class="dropbtn">Audio Tracks</button>
+            <div class="dropdown-content" id="audio-tracks">
+                <!-- JavaScript will populate this -->
+            </div>
+        </div>
 
         <div id="player-container">
             <video id="player" playsinline controls>
-                <source src={{file_url}} type="video/mp4">
+                <source src="{{file_url}}" type="video/mp4">
             </video>
         </div>
     </div>
@@ -260,157 +316,171 @@ YOUR ADS
             <button id="dl-btn" onclick="download()">
                 <i class="fas fa-download"></i> Download Now
             </button>
+            <button id="tgfile-btn" onclick="openTgBot()">
+                <i class="fas fa-telegram"></i> Telegram File
+            </button>
+            <button id="tg-btn" onclick="openModalTG()">
+                <i class="fas fa-telegram"></i> Telegram
+            </button>
         </div>
             
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.8/plyr.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.8/plyr.polyfilled.min.js"></script>
         <script>
-            const player = new Plyr('#player', {
-                controls: ['play', 'progress', 'rewind', 'fast-forward', 'current-time', 'fullscreen', 'settings']
+            const player = new Plyr('#player');
+
+            // Example audio tracks, replace with actual track data
+            const audioTracks = [
+                { label: 'English', language: 'en' },
+                { label: 'Spanish', language: 'es' },
+                { label: 'French', language: 'fr' }
+            ];
+
+            const audioTracksDropdown = document.getElementById('audio-tracks');
+
+            audioTracks.forEach(track => {
+                const button = document.createElement('button');
+                button.textContent = track.label;
+                button.addEventListener('click', () => {
+                    player.audioTracks.forEach((audioTrack, index) => {
+                        if (audioTrack.language === track.language) {
+                            player.audioTrack = index;
+                        }
+                    });
+                });
+                audioTracksDropdown.appendChild(button);
             });
         </script>
-        </div>    
+    </div>    
 
-	<div class="mainupdates">
-<div style="margin-bottom: 5px; margin-top: 20px">𝐉𝐨𝐢𝐧 𝐎𝐮𝐫 𝐌𝐚𝐢𝐧 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 𝐅𝐨𝐫 𝐌𝐨𝐫𝐞 𝐮𝐩𝐝𝐚𝐭𝐞𝐬 ❤️ :</div>
-<center><h3><b>   
-    <a href="https://telegram.dog/CinemasMawa"> <img src="https://img.shields.io/badge/Updates- Channel -blueviolet?style=for-the-badge" alt="Channel"> </a> 
-</b></h3></center>
-	</div>
-        
-        
-<script>
-    const currentUrl = window.location.href;
-    const finalUrl = currentUrl.replace("/watch/", "/");
+    <div class="mainupdates">
+        <div style="margin-bottom: 5px; margin-top: 20px">𝐉𝐨𝐢𝐧 𝐎𝐮𝐫 𝐌𝐚𝐢𝐧 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 𝐅𝐨𝐫 𝐌𝐨𝐫𝐞 𝐮𝐩𝐝𝐚𝐭𝐞𝐬 ❤️ :</div>
+        <center><h3><b>   
+            <a href="https://telegram.dog/CinemasMawa"> <img src="https://img.shields.io/badge/Updates- Channel -blueviolet?style=for-the-badge" alt="Channel"> </a> 
+        </b></h3></center>
+    </div>
 
-    function playOnline() {
-        const finalLinkUrl = finalUrl;
-        const vlcUrl = `vlc://${finalLinkUrl}`;
-        window.location.href = vlcUrl;
-    }
+    <script>
+        const currentUrl = window.location.href;
+        const finalUrl = currentUrl.replace("/watch/", "/");
 
-    function playOnlineMx() {
-        const finalLinkUrl = finalUrl;
-        const mxUrl = `intent:${finalLinkUrl}#Intent;package=com.mxtech.videoplayer.ad;S.title={{file_name}};end`;
-        window.location.href = mxUrl;
-    }
-    
-    function playOnlinesp() {
-        const finalLinkUrl = finalUrl;
-        const spUrl = `intent:${finalLinkUrl}#Intent;action=com.young.simple.player.playback_online;package=com.young.simple.player;end`;
-        window.location.href = spUrl;
-    }
-    
-    function playOnlinepi() {
-        const finalLinkUrl = finalUrl;
-        const piUrl = `playit://playerv2/video?url=${finalLinkUrl}&amp;title={{file_name}}`;
-        window.location.href = piUrl;
-    }
-
-    function openTgBot() {
-        const createLinkUrl = "https://telegram.dog/";
-        window.open(createLinkUrl, "_blank");
-    }
-
-    function openModalTG() {
-        const modal = document.getElementById("myModal");
-        modal.style.display = "block";
-
-        const words = [
-            "Received File request...✅",
-            "Processing your request...⌛",
-            "Generating your link...🔗",
-            "Sending link to you...🚀",
-            "Redirecting To Telegram...😉"
-        ];
-
-        let index = 0;
-        const timerElement = document.getElementById("timer");
-        timerElement.innerText = words[index];
-
-        const timer = setInterval(() => {
-            index++;
-            if (index < words.length) {
-                timerElement.innerText = words[index];
-            } else {
-                clearInterval(timer);
-                TGre();
-                modal.style.display = "none";
-            }
-        }, 1000);
-    }
-
-    function TGre() {
-        const tglink = "";
-        window.location.href = tglink;
-    }
-
-    function openModal() {
-        const modal = document.getElementById("myModal");
-        modal.style.display = "block";
-
-        const words = [
-            "Received Download request...✅",
-            "Processing your request...⌛",
-            "Generating your link...🔗",
-            "Sending link to you...🚀",
-            "Download has started...😉"
-        ];
-
-        let index = 0;
-        const timerElement = document.getElementById("timer");
-        timerElement.innerText = words[index];
-
-        const timer = setInterval(() => {
-            index++;
-            if (index < words.length) {
-                timerElement.innerText = words[index];
-            } else {
-                clearInterval(timer);
-                download();
-                modal.style.display = "none";
-            }
-        }, 1000);
-    }
-
-    
-
-    function download() {
-        const finalLinkUrl = finalUrl;
-        window.location.href = finalLinkUrl;
-    }
-</script>
-<script>
-    document.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (
-            e.key === 'F12' ||
-            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-            (e.ctrlKey && e.key === 'u') ||
-            e.ctrlKey ||
-            e.shiftKey ||
-            e.altKey
-        ) {
-            e.preventDefault();
+        function playOnline() {
+            const finalLinkUrl = finalUrl;
+            const vlcUrl = `vlc://${finalLinkUrl}`;
+            window.location.href = vlcUrl;
         }
-    });
-</script>
-       <!-- <div>
-          <center>
 
-YOUR ADS 
+        function playOnlineMx() {
+            const finalLinkUrl = finalUrl;
+            const mxUrl = `intent:${finalLinkUrl}#Intent;package=com.mxtech.videoplayer.ad;S.title={{file_name}};end`;
+            window.location.href = mxUrl;
+        }
+        
+        function playOnlinesp() {
+            const finalLinkUrl = finalUrl;
+            const spUrl = `intent:${finalLinkUrl}#Intent;action=com.young.simple.player.playback_online;package=com.young.simple.player;end`;
+            window.location.href = spUrl;
+        }
+        
+        function playOnlinepi() {
+            const finalLinkUrl = finalUrl;
+            const piUrl = `playit://playerv2/video?url=${finalLinkUrl}&amp;title={{file_name}}`;
+            window.location.href = piUrl;
+        }
 
-          </center>  --> 
-<footer>
+        function openTgBot() {
+            const createLinkUrl = "https://telegram.dog/";
+            window.open(createLinkUrl, "_blank");
+        }
+
+        function openModalTG() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "block";
+
+            const words = [
+                "Received File request...✅",
+                "Processing your request...⌛",
+                "Generating your link...🔗",
+                "Sending link to you...🚀",
+                "Redirecting To Telegram...😉"
+            ];
+
+            let index = 0;
+            const timerElement = document.getElementById("timer");
+            timerElement.innerText = words[index];
+
+            const timer = setInterval(() => {
+                index++;
+                if (index < words.length) {
+                    timerElement.innerText = words[index];
+                } else {
+                    clearInterval(timer);
+                    TGre();
+                    modal.style.display = "none";
+                }
+            }, 1000);
+        }
+
+        function TGre() {
+            const tglink = "";
+            window.location.href = tglink;
+        }
+
+        function openModal() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "block";
+
+            const words = [
+                "Received Download request...✅",
+                "Processing your request...⌛",
+                "Generating your link...🔗",
+                "Sending link to you...🚀",
+                "Download has started...😉"
+            ];
+
+            let index = 0;
+            const timerElement = document.getElementById("timer");
+            timerElement.innerText = words[index];
+
+            const timer = setInterval(() => {
+                index++;
+                if (index < words.length) {
+                    timerElement.innerText = words[index];
+                } else {
+                    clearInterval(timer);
+                    download();
+                    modal.style.display = "none";
+                }
+            }, 1000);
+        }
+
+        function download() {
+            const finalLinkUrl = finalUrl;
+            window.location.href = finalLinkUrl;
+        }
+    </script>
+    <script>
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u') ||
+                e.ctrlKey ||
+                e.shiftKey ||
+                e.altKey
+            ) {
+                e.preventDefault();
+            }
+        });
+    </script>
+    <footer>
         <p style="font-size: 15px; color:#7b89a3;padding-top: 80px ;margin:0px 10px; border-top: 1px solid #c2cee3;">
-      This website only provide service that help you convert your Telegram File to Online Streaming.
-      You can report the file/video that contains a problem like copyright, 18+, violence, et. Report <a href="https://telegram.dog/Srikanth_Official_Bot" style="color: darkorange"><b>Here</b></a>
-      <p style="text-align:center">&copy; Copyright  </p>
-      <!--
-      YOUR ADS 
-      -->
-</footer>    
+        This website only provides a service that helps you convert your Telegram File to Online Streaming.
+        You can report the file/video that contains a problem like copyright, 18+, violence, etc. Report <a href="https://telegram.dog/Srikanth_Official_Bot" style="color: darkorange"><b>Here</b></a>
+        <p style="text-align:center">&copy; Copyright </p>
+    </footer>    
 </body>
 </html>
